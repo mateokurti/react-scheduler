@@ -52,6 +52,7 @@ export type SchedulerRowLabel = {
   icon: string;
   title: string;
   subtitle: string;
+  maxOccupancy: number;
 };
 export type SchedulerProjectData = {
   /**
@@ -131,6 +132,7 @@ export type TileProperties = {
   x: number;
   y: number;
   width: number;
+  height: number;
 };
 
 export type ConfigFormValues = {

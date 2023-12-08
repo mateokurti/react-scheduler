@@ -16,12 +16,13 @@ import { TileProps } from "./types";
 const Tile: FC<TileProps> = ({ row, data, zoom, onTileClick }) => {
   const { date } = useCalendar();
   const datesRange = getDatesRange(date, zoom);
-  const { y, x, width } = getTileProperties(
+  const { y, x, width, height } = getTileProperties(
     row,
     datesRange.startDate,
     datesRange.endDate,
     data.startDate,
     data.endDate,
+    data.occupancy,
     zoom
   );
 
@@ -32,6 +33,7 @@ const Tile: FC<TileProps> = ({ row, data, zoom, onTileClick }) => {
         top: `${y}px`,
         backgroundColor: `${data.bgColor ?? tileDefaultBgColor}`,
         width: `${width}px`,
+        height: `${height}px`,
         color: getTileTextColor(data.bgColor ?? "")
       }}
       onClick={() => onTileClick?.(data)}>

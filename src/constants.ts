@@ -7,6 +7,7 @@ export const headerDayHeight = 40;
 export const headerHeight = headerDayHeight + headerWeekHeight + headerMonthHeight;
 export const weekWidth = 84;
 export const boxHeight = 56;
+export const oneHourHeight = 3;
 export const leftColumnWidth = 196;
 export const singleDayWidth = 12;
 export const weeksInYear = 52;

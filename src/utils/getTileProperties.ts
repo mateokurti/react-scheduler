@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { boxHeight, tileYOffset } from "@/constants";
+import { boxHeight, oneHourHeight, tileHeight, tileYOffset } from "@/constants";
 import { TileProperties } from "@/types/global";
 import { getTileXAndWidth } from "./getTileXAndWidth";
 
@@ -9,8 +9,10 @@ export const getTileProperties = (
   endDate: dayjs.Dayjs,
   resourceStartDate: Date,
   resourceEndDate: Date,
+  resourceOccupancy: number,
   zoom: number
 ): TileProperties => {
+  const height = tileHeight || oneHourHeight * (resourceOccupancy / 3600) * 5;
   const y = row * boxHeight + tileYOffset;
   const parsedResourceStartDate = dayjs(resourceStartDate).hour(0).minute(0);
   const parsedResourceEndDate = dayjs(resourceEndDate).hour(23).minute(59);
@@ -21,6 +23,7 @@ export const getTileProperties = (
       { startDate, endDate },
       zoom
     ),
-    y
+    y,
+    height
   };
 };

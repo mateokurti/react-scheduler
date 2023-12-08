@@ -19,7 +19,11 @@ export const splitToPages = (
 
   if (projectsPerPerson.length > recordsThreshold) {
     projectsPerPerson.forEach((projects, i) => {
-      const newItem = { id: data[i].id, label: data[i].label, data: projects };
+      const newItem = {
+        id: data[i].id,
+        label: data[i].label,
+        data: projects
+      };
 
       if (pageRecords >= recordsThreshold) {
         pages.push(singlePage);
@@ -49,7 +53,11 @@ export const splitToPages = (
     return pages;
   }
   projectsPerPerson.forEach((projects, i) => {
-    const newItem = { id: data[i].id, label: data[i].label, data: projects };
+    const newItem = {
+      id: data[i].id,
+      label: data[i].label,
+      data: projects
+    };
     singlePage.push(newItem);
   });
 

@@ -82,7 +82,8 @@ export const createMockData = (
       label: {
         icon: "https://picsum.photos/24",
         title,
-        subtitle: getRandomWords()
+        subtitle: getRandomWords(),
+        maxOccupancy: secondsInWorkDay
       },
       data
     };
