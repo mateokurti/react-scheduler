@@ -1,15 +1,13 @@
-import { maxHoursPerDay, maxHoursPerWeek, minutesInHour } from "@/constants";
+import { minutesInHour } from "@/constants";
 import { OccupancyData, TimeUnits } from "@/types/global";
 
 export const getTimeOccupancy = (
   timeUnits: TimeUnits,
-  zoom: number
+  maxOccupancy: TimeUnits
 ): Omit<OccupancyData, "taken"> => {
-  const maxHours = zoom === 0 ? maxHoursPerWeek : maxHoursPerDay;
-
   const getFreeTime = () => {
-    let hours = maxHours - timeUnits.hours - 1;
-    let minutes = minutesInHour - timeUnits.minutes;
+    let hours = maxOccupancy.hours - timeUnits.hours;
+    let minutes = maxOccupancy.minutes - timeUnits.minutes;
 
     if (minutes === minutesInHour) {
       hours++;
@@ -19,8 +17,8 @@ export const getTimeOccupancy = (
   };
 
   const getOverTime = () => {
-    const overHours = timeUnits.hours - maxHours;
-    const overMinutes = timeUnits.minutes;
+    const overHours = timeUnits.hours - maxOccupancy.hours;
+    const overMinutes = timeUnits.minutes - maxOccupancy.minutes;
     return { hours: Math.max(0, overHours), minutes: overHours < 0 ? 0 : overMinutes };
   };
 

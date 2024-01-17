@@ -1,10 +1,15 @@
 import dayjs from "dayjs";
-import { SchedulerProjectData, OccupancyData, ZoomLevel } from "@/types/global";
+import {
+  SchedulerProjectData,
+  OccupancyData,
+  ZoomLevel,
+  PaginatedSchedulerRow
+} from "@/types/global";
 import { getWeekOccupancy } from "./getWeekOccupancy";
 import { getDayOccupancy } from "./getDayOccupancy";
 
 export const getOccupancy = (
-  resource: SchedulerProjectData[][],
+  resource: PaginatedSchedulerRow,
   resourceIndex: number,
   focusedDate: dayjs.Dayjs,
   zoom: ZoomLevel,
@@ -16,7 +21,9 @@ export const getOccupancy = (
       free: { hours: 0, minutes: 0 },
       overtime: { hours: 0, minutes: 0 }
     };
-  const occupancy = resource.flat(2).filter((item) => {
+
+  const maxOccupancy = resource.label.maxOccupancy;
+  const occupancy = resource.data.flat(2).filter((item: SchedulerProjectData) => {
     if (zoom === 0) {
       return (
         dayjs(item.startDate).isBetween(
@@ -32,6 +39,6 @@ export const getOccupancy = (
   });
 
   return zoom === 0
-    ? getWeekOccupancy(occupancy, focusedDate, zoom)
-    : getDayOccupancy(occupancy, focusedDate, zoom, includeTakenHoursOnWeekendsInDayView);
+    ? getWeekOccupancy(occupancy, maxOccupancy, focusedDate)
+    : getDayOccupancy(occupancy, maxOccupancy, focusedDate, includeTakenHoursOnWeekendsInDayView);
 };

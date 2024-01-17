@@ -1,7 +1,7 @@
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import debounce from "lodash.debounce";
 import { useCalendar } from "@/context/CalendarProvider";
-import { Day, SchedulerData, SchedulerProjectData, TooltipData, ZoomLevel } from "@/types/global";
+import { Day, SchedulerData, PaginatedSchedulerData, TooltipData, ZoomLevel } from "@/types/global";
 import { getTooltipData } from "@/utils/getTooltipData";
 import { getDatesRange } from "@/utils/getDatesRange";
 import { usePagination } from "@/hooks/usePagination";
@@ -35,7 +35,6 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
   const datesRange = useMemo(() => getDatesRange(date, zoom), [date, zoom]);
   const {
     page,
-    projectsPerPerson,
     totalRowsPerPage,
     rowsPerItem,
     currentPageNum,
@@ -44,13 +43,14 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
     previous,
     reset
   } = usePagination(filteredData, datesRange);
+
   const debouncedHandleMouseOver = useRef(
     debounce(
       (
         e: MouseEvent,
         startDate: Day,
         rowsPerItem: number[],
-        projectsPerPerson: SchedulerProjectData[][][],
+        page: PaginatedSchedulerData,
         zoom: ZoomLevel
       ) => {
         if (!gridRef.current) return;
@@ -64,7 +64,7 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
           startDate,
           tooltipCoords,
           rowsPerItem,
-          projectsPerPerson,
+          page,
           zoom,
           includeTakenHoursOnWeekendsInDayView
         );
@@ -74,6 +74,7 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
       300
     )
   );
+
   const debouncedFilterData = useRef(
     debounce((dataToFilter: SchedulerData, enteredSearchPhrase: string) => {
       reset();
@@ -100,7 +101,7 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
 
   useEffect(() => {
     const handleMouseOver = (e: MouseEvent) =>
-      debouncedHandleMouseOver.current(e, startDate, rowsPerItem, projectsPerPerson, zoom);
+      debouncedHandleMouseOver.current(e, startDate, rowsPerItem, page, zoom);
     const gridArea = gridRef.current;
 
     if (!gridArea) return;
@@ -112,7 +113,7 @@ export const Calendar: FC<CalendarProps> = ({ data, onTileClick, onItemClick, to
       gridArea.removeEventListener("mousemove", handleMouseOver);
       gridArea.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [debouncedHandleMouseOver, handleMouseLeave, projectsPerPerson, rowsPerItem, startDate, zoom]);
+  }, [debouncedHandleMouseOver, handleMouseLeave, page, rowsPerItem, startDate, zoom]);
 
   useEffect(() => {
     if (searchPhrase) return;

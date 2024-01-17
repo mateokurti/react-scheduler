@@ -1,13 +1,13 @@
 import dayjs from "dayjs";
 import { weekWidth, boxHeight, dayWidth } from "@/constants";
-import { Day, Coords, SchedulerProjectData, TooltipData, ZoomLevel } from "@/types/global";
+import { Day, Coords, TooltipData, ZoomLevel, PaginatedSchedulerData } from "@/types/global";
 import { getOccupancy } from "./getOccupancy";
 
 export const getTooltipData = (
   startDate: Day,
   cursorPosition: Coords,
   rowsPerPerson: number[],
-  resourcesData: SchedulerProjectData[][][],
+  page: PaginatedSchedulerData,
   zoom: ZoomLevel,
   includeTakenHoursOnWeekendsInDayView = false
 ): TooltipData => {
@@ -27,7 +27,7 @@ export const getTooltipData = (
   const yPos = (rowPosition - 1) * boxHeight + boxHeight;
 
   const disposition = getOccupancy(
-    resourcesData[resourceIndex],
+    page[resourceIndex],
     resourceIndex,
     focusedDate,
     zoom,

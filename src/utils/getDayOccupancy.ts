@@ -6,8 +6,8 @@ import { getTimeOccupancy } from "./getTimeOccupancy";
 
 export const getDayOccupancy = (
   occupancy: SchedulerProjectData[],
+  maxOccupancy: number,
   focusedDate: dayjs.Dayjs,
-  zoom: number,
   includeTakenHoursOnWeekendsInDayView: boolean
 ): OccupancyData => {
   const focusedDayNum = focusedDate.isoWeekday();
@@ -21,8 +21,22 @@ export const getDayOccupancy = (
     return { hours: 0, minutes: 0 };
   });
 
+  const getMaxHoursAndMinutes = (maxOccupancy: number): TimeUnits => {
+    if (focusedDayNum <= (includeTakenHoursOnWeekendsInDayView ? 7 : 5)) {
+      return getDuration(
+        includeTakenHoursOnWeekendsInDayView ? maxOccupancy / 7 : maxOccupancy / 5
+      );
+    }
+    return { hours: 0, minutes: 0 };
+  };
+
   const { hours: totalHours, minutes: totalMinutes } = getTotalHoursAndMinutes(getHoursAndMinutes);
-  const { free, overtime } = getTimeOccupancy({ hours: totalHours, minutes: totalMinutes }, zoom);
+  const { hours: maxHours, minutes: maxMinutes } = getMaxHoursAndMinutes(maxOccupancy);
+
+  const { free, overtime } = getTimeOccupancy(
+    { hours: totalHours, minutes: totalMinutes },
+    { hours: maxHours, minutes: maxMinutes }
+  );
 
   return {
     taken: { hours: Math.max(0, totalHours), minutes: Math.max(0, totalMinutes) },
